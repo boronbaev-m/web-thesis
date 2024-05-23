@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result</title>
+    <link rel="stylesheet" href="/app/frontend/src/styles.css">
+    <link rel="stylesheet" href="/app/frontend/src/index.css">
+</head>
+
+<body>
+    <main>
+        <div class="main">
+            <div class="result">
+                <div>
+                    <h1 id="resultText">Your code has issues</h1>
+                    <button type="button" onclick="goBack()">Back</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        function goBack() {
+            window.history.back();
+        }
+
+        async function checkJobStatus(jobId) {
+            const response = await fetch(`/result/${jobId}`);
+            const result = await response.json();
+            const resultText = document.getElementById('resultText');
+
+            if (response.status === 202) {
+                setTimeout(() => checkJobStatus(jobId), 1000);
+            } else {
+                resultText.innerText = `Your code check result: ${result.result}`;
+            }
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const jobId = urlParams.get('job_id');
+        checkJobStatus(jobId);
+    </script>
+</body>
+
+</html>
