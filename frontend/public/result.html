@@ -19,7 +19,7 @@
   <div class="main">
     <div class="result">
       <div>
-        <h1>Your code has issues</h1>
+        <h1 style="text-align: center" id="h1">Loading ...</h1>
         <button type="button" onclick="goBack()">Back</button>
       </div>
     </div>
@@ -30,6 +30,26 @@
   function goBack() {
     window.history.back();
   }
+
+  const getJob = async () => {
+    const h1 = document.getElementById('h1')
+
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+
+      const jobId = urlParams.get('jobId');
+      const response = await fetch(`http://127.0.0.1:5000/result/${jobId}`, {
+        method: 'GET',
+        headers: {'Content-Type': 'application/json'},
+      })
+
+      h1.textContent = response.json()?.result || 'Server Error'
+    } catch {
+      h1.textContent = 'Server Error'
+    }
+  }
+
+  getJob()
 </script>
 </body>
 
