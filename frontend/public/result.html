@@ -2,45 +2,35 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Result</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="index.css">
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="index.css">
+
+  <title>Result</title>
 </head>
 
 <body>
-    <main>
-        <div class="main">
-            <div class="result">
-                <div>
-                    <h1 id="resultText">Your code has issues</h1>
-                    <button type="button" onclick="goBack()">Back</button>
-                </div>
-            </div>
-        </div>
-    </main>
-    <script>
-        function goBack() {
-            window.history.back();
-        }
 
-        async function checkJobStatus(jobId) {
-            const response = await fetch(`/result/${jobId}`);
-            const result = await response.json();
-            const resultText = document.getElementById('resultText');
+<main>
+  <div class="main">
+    <div class="result">
+      <div>
+        <h1>Your code has issues</h1>
+        <button type="button" onclick="goBack()">Back</button>
+      </div>
+    </div>
+  </div>
+</main>
 
-            if (response.status === 202) {
-                setTimeout(() => checkJobStatus(jobId), 1000);
-            } else {
-                resultText.innerText = `Your code check result: ${result.result}`;
-            }
-        }
-
-        const urlParams = new URLSearchParams(window.location.search);
-        const jobId = urlParams.get('job_id');
-        checkJobStatus(jobId);
-    </script>
+<script>
+  function goBack() {
+    window.history.back();
+  }
+</script>
 </body>
 
 </html>
