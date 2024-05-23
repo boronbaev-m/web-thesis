@@ -3,7 +3,7 @@ from transformers import RobertaTokenizer, AutoModelForSequenceClassification
 from app.models import Code
 from app import db
 
-model_path = "/app/model"
+model_path = "model"
 tokenizer = RobertaTokenizer.from_pretrained('microsoft/codebert-base')
 model = AutoModelForSequenceClassification.from_pretrained(model_path)
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
