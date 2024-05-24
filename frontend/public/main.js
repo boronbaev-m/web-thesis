@@ -18,16 +18,17 @@ form.addEventListener('submit', async (e) => {
     try {
         const response = await fetch('http://127.0.0.1:5000/submit', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({code: e.target[0].value})
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code: e.target[0].value })
         })
         if (response.ok) {
-            const data = response.json()
-
+            const data = await response.json()
+            alert(JSON.stringify(data))
+            localStorage.setItem('message', data.result);
             const url = new URL(window.location.href);
             url.pathname = `result.html`;
 
-            window.location.href = `result.html?jobId=${data?.jobId}`;
+            window.location.href = `result.html`;
         } else {
             alert('error');
         }
