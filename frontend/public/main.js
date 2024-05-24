@@ -1,6 +1,5 @@
 const startBtn = document.getElementById('start')
 startBtn.addEventListener('click', () => {
-    console.log("clicked")
     window.scrollTo({
         top: document.body.scrollHeight,
         behavior: 'smooth'
@@ -8,21 +7,40 @@ startBtn.addEventListener('click', () => {
 })
 
 const form = document.getElementById('form')
-form.addEventListener('submit', (e) => {
+form.addEventListener('submit', async (e) => {
     e.preventDefault()
-    console.log("submit")
 
-    // fetch('http://127.0.0.1:5000/submit', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify({ code: e.target[0].value })
-    // }).then(response => {
-    //     if (response.ok) {
-    //         return response.json();
-    //     }
-    //     throw new Error('Network response was not ok.');
-    // })
-    //     .then(data => {
-    //         console.log(data);
-    //     })
+    const submitBtn = e.target[1]
+
+    submitBtn.textContent = 'Loading'
+    submitBtn.disabled = true
+
+    try {
+        const response = await fetch('http://127.0.0.1:5000/submit', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({code: e.target[0].value})
+        })
+        if (response.ok) {
+            const data = response.json()
+
+            const url = new URL(window.location.href);
+            url.pathname = `result.html`;
+
+            window.location.href = `result.html?jobId=${data?.jobId}`;
+        } else {
+            alert('error');
+        }
+    } catch (e) {
+        alert('error');
+    }
+
+    submitBtn.textContent = 'Check code'
+    submitBtn.disabled = false
+    // const data = {jobId: 1}
+    //
+    // const url = new URL(window.location.href);
+    // url.pathname = `result.html`;
+    //
+    // window.location.href = `result.html?jobId=${data?.jobId}`;
 })
