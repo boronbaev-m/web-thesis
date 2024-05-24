@@ -4,6 +4,11 @@ from app import db, bcrypt, queue
 from app.models import User, Code
 from app.utils import check_code
 from app.forms import RegistrationForm, LoginForm, CodeForm
+import torch
+from transformers import RobertaTokenizer, AutoModelForSequenceClassification
+from app.models import Code
+from app import db
+from .utils import check_code_raw
 
 main = Blueprint('main', __name__)
 users = Blueprint('users', __name__)
@@ -53,18 +58,15 @@ def logout():
     return redirect(url_for('main.home'))
 
 @code.route('/submit', methods=['POST'])
-@login_required
+# @login_required
 def submit():
     data = request.get_json()
     code_content = data.get('code')
-    code_entry = Code(content=code_content, author=current_user)
-    db.session.add(code_entry)
-    db.session.commit()
-    job = queue.enqueue(check_code, code_entry.id)
-    return jsonify({'job_id': job.get_id()}), 202
+    res = check_code_raw(code_content)
+    return jsonify({'result': res}), 202
 
 @code.route('/result/<job_id>', methods=['GET'])
-@login_required
+# @login_required
 def get_result(job_id):
     job = queue.fetch_job(job_id)
     if job.is_finished:

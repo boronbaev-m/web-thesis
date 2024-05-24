@@ -22,3 +22,13 @@ def check_code(code_id):
     code_entry.result = str(prediction)
     db.session.commit()
     return code_entry.id
+
+def check_code_raw(code):
+    tokenized_input = tokenizer(code, return_tensors='pt', truncation=True, padding=True)
+    input_ids = tokenized_input['input_ids'].to(device)
+    attention_mask = tokenized_input['attention_mask'].to(device)
+    with torch.no_grad():
+        outputs = model(input_ids=input_ids, attention_mask=attention_mask)
+        predictions = torch.argmax(outputs.logits, dim=1)
+        prediction = predictions.cpu().item()
+    return str(prediction)
